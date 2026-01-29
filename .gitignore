@@ -1,0 +1,9 @@
+.DS_Store
+__pycache__/
+*.pyc
+
+# IGNORAR VARIABLES DE ENTORNO REALES
+.env
+
+# (Pero permitimos subir el ejemplo)
+!.env.example

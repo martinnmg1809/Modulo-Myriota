@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  # 1. BASE DE DATOS
+  influxdb:
+    image: influxdb:1.8
+    container_name: myriota_influxdb
+    ports:
+      - "8086:8086"
+    volumes:
+      - influxdb_data:/var/lib/influxdb
+    env_file:
+      - ../.env
+    networks:
+      - red_satelital
+    restart: always
+
+  # 2. BACKEND PYTHON
+  backend:
+    build: ../backend
+    container_name: myriota_backend
+    depends_on:
+      - influxdb
+    env_file:
+      - ../.env
+    networks:
+      - red_satelital
+    restart: always
+
+  # 3. GRAFANA (¡NUEVO!)
+  grafana:
+    image: grafana/grafana:latest
+    container_name: myriota_dashboard
+    ports:
+      - "3000:3000" # Puerto web
+    depends_on:
+      - influxdb
+    networks:
+      - red_satelital
+    volumes:
+      - grafana_data:/var/lib/grafana
+    restart: always
+
+volumes:
+  influxdb_data:
+  grafana_data: # Volumen nuevo para guardar tus gráficos
+
+networks:
+  red_satelital:
